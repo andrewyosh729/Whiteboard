@@ -1,0 +1,19 @@
+﻿@page
+@model Whiteboard.Pages.IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<body>
+<script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/"
+    }
+  }
+</script>
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script type="module" src="~/js/site.js" asp-append-version="true"></script>
+</body>
+
