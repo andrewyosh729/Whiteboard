@@ -6,8 +6,8 @@ namespace Whiteboard.Hubs;
 public class ControlHub : Hub
 {
     
-    public async Task SendData(MousePosition mousePosition)
+    public async Task SendData(int userId, MousePosition mousePosition)
     {
-        await Clients.All.SendAsync("ReceiveData", mousePosition);
+        await Clients.All.SendAsync("ReceiveData", userId, mousePosition);
     }
 }

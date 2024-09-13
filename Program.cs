@@ -1,11 +1,13 @@
+using Whiteboard;
 using Whiteboard.Hubs;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+IServiceCollection services = builder.Services;
 
 // Add services to the container.
-builder.Services.AddRazorPages();
-builder.Services.AddSignalR();
-
+services.AddControllersWithViews();
+services.AddSignalR();
+services.AddSingleton<IIdService, IdService>();
 WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -23,8 +25,12 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-app.MapRazorPages();
+
+app.MapControllerRoute( 
+    name: "default",   
+    pattern: "{controller=Home}/{action=Index}");
 
 app.MapHub<ControlHub>("/controlHub");
+
 
 app.Run();

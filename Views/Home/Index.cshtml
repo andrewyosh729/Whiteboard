@@ -1,10 +1,8 @@
-﻿@page
-@model Whiteboard.Pages.IndexModel
-@{
-    ViewData["Title"] = "Home page";
-}
+﻿<input  type="hidden" runat="server" id="id" value="@Model" />
+
 
 <body>
+<p>@Model</p>
 <script type="importmap">
     {
       "imports": {
