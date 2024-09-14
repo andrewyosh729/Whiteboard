@@ -1,7 +1,7 @@
 ﻿import * as THREE from 'three';
 
 let localId = parseInt(document.getElementById("id").value);
-let isDrawingLocal = false;
+let mouseDown = false;
 let currentLocalDrawingData = null;
 let MAX_POINTS = 500;
 
@@ -45,7 +45,7 @@ async function onMouseUpdate(e) {
     localDot.position.y = mouseY;
 
 
-    if (isDrawingLocal) {
+    if (mouseDown) {
         if (currentLocalDrawingData == null || currentLocalDrawingData.count + 1 > MAX_POINTS) {
             currentLocalDrawingData = CreateDrawingData();
             scene.add(currentLocalDrawingData.line);
@@ -59,12 +59,12 @@ async function onMouseUpdate(e) {
 }
 
 async function onMouseDown() {
-    isDrawingLocal = true;
+    mouseDown = true;
     await controlHubConnection.invoke("SendDrawingStart", localId)
 }
 
 async function onMouseUp() {
-    isDrawingLocal = false;
+    mouseDown = false;
     currentLocalDrawingData = null;
     await controlHubConnection.invoke("SendDrawingEnd", localId)
 }
