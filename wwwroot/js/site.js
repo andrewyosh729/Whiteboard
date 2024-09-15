@@ -1,4 +1,5 @@
 ﻿import * as THREE from 'three';
+import {MeshLineGeometry, MeshLineMaterial} from 'meshline';
 
 let localId = parseInt(document.getElementById("id").value);
 let mouseDown = false;
@@ -46,7 +47,7 @@ async function onMouseUpdate(e) {
 
 
     if (mouseDown) {
-        if (currentLocalDrawingData == null || currentLocalDrawingData.count + 1 > MAX_POINTS) {
+        if (currentLocalDrawingData == null) {
             currentLocalDrawingData = CreateDrawingData();
             scene.add(currentLocalDrawingData.line);
 
@@ -100,11 +101,6 @@ controlHubConnection.on("ReceiveMousePosition", function (id, mousePosition) {
 
     let userDrawing = userDrawings.get(id);
     if (userDrawing != null) {
-        if (userDrawing.count + 1 > MAX_POINTS) {
-            userDrawings.set(id, CreateDrawingData());
-            scene.add(userDrawing.line);
-        }
-
         UpdateDrawing(userDrawing, mousePosition.x, mousePosition.y);
     }
 
@@ -129,12 +125,12 @@ function CreateDot(color) {
 }
 
 function CreateLine() {
-    currentLocalDrawingData = new Float32Array(MAX_POINTS * 3); // 3 vertices per point
-    const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute('position', new THREE.BufferAttribute(currentLocalDrawingData, 3));
-    const material = new THREE.LineBasicMaterial({color: 0x0000ff});
-    let line = new THREE.Line(geometry, material);
-    return {drawingPoints: currentLocalDrawingData, line: line};
+    let points = []
+    const geometry = new MeshLineGeometry();
+    const material = new MeshLineMaterial({lineWidth: .005});
+    material.linewidth = 1;
+    let line = new THREE.Mesh(geometry, material);
+    return {drawingPoints: points, line: line, geometry: geometry};
 }
 
 function CreateDrawingData() {
@@ -143,15 +139,14 @@ function CreateDrawingData() {
     return {
         points: lineData.drawingPoints,
         line: lineData.line,
+        geometry: lineData.geometry,
         count: 0
     }
 }
 
 function UpdateDrawing(drawingData, mouseX, mouseY) {
-    drawingData.points[drawingData.count * 3] = mouseX;
-    drawingData.points[drawingData.count * 3 + 1] = mouseY;
-    drawingData.points[drawingData.count * 3 + 2] = 0;
-    drawingData.count++;
-    drawingData.line.geometry.setDrawRange(0, drawingData.count);
-    drawingData.line.geometry.attributes.position.needsUpdate = true;
+    drawingData.points.push(mouseX, mouseY,0)
+    drawingData.geometry.setPoints(drawingData.points);
+    // drawingData.line.geometry.setDrawRange(0, drawingData.count);
+    // drawingData.line.geometry.attributes.position.needsUpdate = true;
 }
