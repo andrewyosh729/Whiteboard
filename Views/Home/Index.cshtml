@@ -1,8 +1,20 @@
-﻿<input type="hidden" runat="server" id="id" value="@Model"/>
+﻿@using System.Text.Json
+@using System.Text.Json.Serialization
+@using Newtonsoft.Json
+@using Whiteboard.Controllers
+@using Whiteboard.Services
+<input type="hidden" runat="server" id="id" value="@(((UserInitializationData)Model).UserId)"/>
 
+@{
+    string existingDrawings = JsonConvert.SerializeObject(((UserInitializationData)Model).ExistingDrawings);
+}
+
+<div id="data-container" existing-drawings='@Html.Raw(existingDrawings)'></div>
 
 <body>
-<p>@Model</p>
+<script>
+    window.existingDrawings = @Html.Raw(existingDrawings);
+</script>
 <script type="importmap">
     {
       "imports": {

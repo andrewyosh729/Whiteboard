@@ -1,5 +1,6 @@
 using Whiteboard;
 using Whiteboard.Hubs;
+using Whiteboard.Services;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 IServiceCollection services = builder.Services;
@@ -8,6 +9,7 @@ IServiceCollection services = builder.Services;
 services.AddControllersWithViews();
 services.AddSignalR();
 services.AddSingleton<IIdService, IdService>();
+services.AddSingleton<IDrawingCacheService, DrawingCacheService>();
 WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.

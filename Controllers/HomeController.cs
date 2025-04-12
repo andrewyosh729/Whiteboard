@@ -1,18 +1,33 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Whiteboard.Services;
 
-namespace Whiteboard.Controller;
+namespace Whiteboard.Controllers;
 
+public readonly struct UserInitializationData
+{
+    public UserInitializationData(long userId, IReadOnlyList<Drawing> existingDrawings)
+    {
+        UserId = userId;
+        ExistingDrawings = existingDrawings;
+    }
+
+    public long UserId { get; }
+    public IReadOnlyList<Drawing> ExistingDrawings { get; }
+}
 public class HomeController : Microsoft.AspNetCore.Mvc.Controller
 {
     private IIdService IdService { get; }
 
-    public HomeController(IIdService idService)
+    private IDrawingCacheService DrawingCacheService { get; }
+    public HomeController(IIdService idService, IDrawingCacheService drawingCacheService)
     {
         IdService = idService;
+        DrawingCacheService = drawingCacheService;
     }
     // GET
     public IActionResult Index()
     {
-        return View(IdService.GetNextId());
+        
+        return View(new UserInitializationData(IdService.GetNextId(), DrawingCacheService.GetCachedDrawings()));
     }
 }
